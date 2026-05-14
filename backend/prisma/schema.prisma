@@ -42,6 +42,8 @@ enum RecurrenceFrequency {
   BIWEEKLY
   SEMI_MONTHLY
   MONTHLY
+  QUARTERLY
+  ANNUALLY
   CUSTOM
 }
 
@@ -101,6 +103,7 @@ model Category {
   user     User?     @relation(fields: [userId], references: [id])
   payables Payable[]
 
+  @@unique([name, userId])
   @@map("categories")
 }
 
