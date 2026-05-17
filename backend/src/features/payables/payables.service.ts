@@ -5,6 +5,7 @@ import {
   RecurrenceFrequency,
 } from './dto/create-payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
+import { computeDates } from '../../shared/utils/date.utils';
 
 @Injectable()
 export class PayablesService {
@@ -91,18 +92,14 @@ export class PayablesService {
       periods.push({ dueDate: start, amountDue: amount });
     } else if (end) {
       if (!payable.recurrenceFrequency) return;
-      const dates = this.computeDates(start, end, payable.recurrenceFrequency);
+      const dates = computeDates(start, end, payable.recurrenceFrequency);
       const capped = dates.slice(0, 200);
       capped.forEach((d) => periods.push({ dueDate: d, amountDue: amount }));
     } else {
       if (!payable.recurrenceFrequency) return;
       const windowEnd = new Date();
       windowEnd.setMonth(windowEnd.getMonth() + 3);
-      const dates = this.computeDates(
-        start,
-        windowEnd,
-        payable.recurrenceFrequency,
-      );
+      const dates = computeDates(start, windowEnd, payable.recurrenceFrequency);
       dates.forEach((d) => periods.push({ dueDate: d, amountDue: amount }));
     }
 
@@ -113,41 +110,5 @@ export class PayablesService {
         amountDue: p.amountDue,
       })),
     });
-  }
-
-  private computeDates(
-    start: Date,
-    end: Date,
-    frequency: RecurrenceFrequency,
-  ): Date[] {
-    const dates: Date[] = [];
-    const current = new Date(start);
-
-    while (current <= end) {
-      dates.push(new Date(current));
-      switch (frequency) {
-        case RecurrenceFrequency.WEEKLY:
-          current.setDate(current.getDate() + 7);
-          break;
-        case RecurrenceFrequency.BIWEEKLY:
-          current.setDate(current.getDate() + 14);
-          break;
-        case RecurrenceFrequency.SEMI_MONTHLY:
-          current.setDate(current.getDate() + 15);
-          break;
-        case RecurrenceFrequency.MONTHLY:
-          current.setMonth(current.getMonth() + 1);
-          break;
-        case RecurrenceFrequency.QUARTERLY:
-          current.setMonth(current.getMonth() + 3);
-          break;
-        case RecurrenceFrequency.ANNUALLY:
-          current.setFullYear(current.getFullYear() + 1);
-          break;
-        default:
-          return dates;
-      }
-    }
-    return dates;
   }
 }
