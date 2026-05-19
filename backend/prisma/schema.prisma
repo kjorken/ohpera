@@ -16,10 +16,12 @@ datasource db {
 
 // Users
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  name          String
+  plan         Plan      @default(FREE)
+  proExpiresAt DateTime? @map("pro_expires_at")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -32,10 +34,15 @@ model User {
   incomeSources IncomeSource[]
   savingsGoals  SavingsGoal[]
 
+
   @@map("users")
 }
 
 // ─── ENUMS ────────────────────────────────────────────
+enum Plan {
+  FREE
+  PRO
+}
 
 enum RecurrenceFrequency {
   WEEKLY

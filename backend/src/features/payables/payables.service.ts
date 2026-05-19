@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../shared/database/prisma.service';
 import {
-  CreatePayableDto,
-  RecurrenceFrequency,
-} from './dto/create-payable.dto';
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '../../shared/database/prisma.service';
+import { CreatePayableDto } from './dto/create-payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
 import { computeDates } from '../../shared/utils/date.utils';
 
@@ -12,6 +13,24 @@ export class PayablesService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreatePayableDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { plan: true },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.plan === 'FREE') {
+      const count = await this.prisma.payable.count({
+        where: { userId, deletedAt: null },
+      });
+      if (count >= 10) {
+        throw new ForbiddenException(
+          'Free plan limit reached. Upgrade to PRO to add more payables.',
+        );
+      }
+    }
+
     const payable = await this.prisma.payable.create({
       data: {
         userId,
