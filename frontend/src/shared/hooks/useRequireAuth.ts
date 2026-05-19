@@ -1,10 +1,10 @@
-import { useAuthStore } from "@/shared/store/auth.store";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useAuthStore } from "@/shared/store/auth.store";
 
 export function useRequireAuth() {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const token = useAuthStore((s) => s.token);
 
   useEffect(() => {
     if (!token) {
