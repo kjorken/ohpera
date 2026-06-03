@@ -1,0 +1,42 @@
+                    GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+ Copyright (C) 2025 OhPera. All Rights Reserved.
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+ADDITIONAL TERMS (per AGPLv3 Section 7):
+
+1. Attribution Required
+   Any modified version of this software that is made publicly available,
+   whether as source code or as a hosted service, must clearly attribute
+   the original project: OhPera (https://github.com/kjorken/ohpera)
+
+2. No Commercial Hosting Without Agreement
+   You may not offer this software, or any modified version of it, as a
+   commercial hosted service without a separate written agreement from the
+   original authors. Running it privately for personal use is permitted.
+
+3. Preserved Notices
+   You may not remove or alter any copyright, license, or attribution
+   notices present in the source code.
+
+---
+
+For the full GNU Affero General Public License v3.0 text, see:
+https://www.gnu.org/licenses/agpl-3.0.txt
+
+For commercial licensing inquiries, contact the maintainers.
