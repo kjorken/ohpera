@@ -20,6 +20,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
+import AppShell from "@/components/layout/AppShell";
 
 interface Category {
   id: string;
@@ -270,6 +271,32 @@ export default function Dashboard() {
 
   if (!isAuthed) return null;
 
+  return (
+    <AppShell>
+      <DashboardContent
+        isAuthed={isAuthed}
+        upcoming={upcoming}
+        overdue={overdue}
+        payables={payables}
+        user={user}
+      />
+    </AppShell>
+  );
+}
+
+function DashboardContent({
+  isAuthed,
+  upcoming,
+  overdue,
+  payables,
+  user,
+}: {
+  isAuthed: boolean;
+  upcoming: ReturnType<typeof useQuery<PaymentPeriod[]>>;
+  overdue: ReturnType<typeof useQuery<PaymentPeriod[]>>;
+  payables: ReturnType<typeof useQuery<Payable[]>>;
+  user: { email: string } | null;
+}) {
   const totalUpcoming = upcoming.data?.reduce(
     (sum, p) => sum + Number(p.amountDue),
     0,
@@ -285,7 +312,7 @@ export default function Dashboard() {
     upcoming.error.message.toLowerCase().includes("settings");
 
   return (
-    <div className="relative mx-auto max-w-4xl px-4 py-8">
+    <div className="relative mx-auto max-w-4xl px-4 py-8 pb-24">
       {/* Decorative blob */}
       <div
         className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-b from-ube/5 to-mango/3 blur-3xl"
@@ -335,12 +362,14 @@ export default function Dashboard() {
             }
             accent={overdue.data && overdue.data.length > 0 ? "danger" : undefined}
           />
-          <SummaryCard
-            title="Active bills"
-            value={totalPayables.toString()}
-            icon={ListTodo}
-            subtext={totalPayables === 1 ? "1 bill to track" : `${totalPayables} bills to track`}
-          />
+          <Link href="/payables" className="block transition-transform duration-200 hover:-translate-y-0.5">
+            <SummaryCard
+              title="Active bills"
+              value={totalPayables.toString()}
+              icon={ListTodo}
+              subtext={totalPayables === 1 ? "1 bill to track" : `${totalPayables} bills to track`}
+            />
+          </Link>
         </div>
 
         {/* Content */}
