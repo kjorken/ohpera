@@ -5,12 +5,13 @@ import { useAuthStore } from "@/shared/store/auth.store";
 export function useRequireAuth() {
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
 
   useEffect(() => {
-    if (!token) {
+    if (isHydrated && !token) {
       router.replace("/login");
     }
-  }, [token, router]);
+  }, [isHydrated, token, router]);
 
-  return { isAuthed: !!token };
+  return { isAuthed: !!token, isHydrated };
 }

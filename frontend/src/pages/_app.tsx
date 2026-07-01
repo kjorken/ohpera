@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     hydrate();
-  }, []);
+  }, [hydrate]);
 
   return (
     <QueryClientProvider client={queryClient}>
