@@ -48,11 +48,11 @@ export default function LoginForm() {
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 bg-background">
       {/* Decorative background blobs */}
       <div
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[400px] w-[400px] max-w-[90vw] rounded-full bg-gradient-to-b from-ube/8 to-mango/5 blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-100 w-100 max-w-[90vw] rounded-full bg-linear-to-b from-ube/8 to-mango/5 blur-3xl"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-gradient-to-t from-mango/6 to-transparent blur-2xl"
+        className="pointer-events-none absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-linear-to-t from-mango/6 to-transparent blur-2xl"
         aria-hidden="true"
       />
 

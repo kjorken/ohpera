@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -80,7 +80,7 @@ export default function PayableCreateForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<PayableFormValues>({
@@ -91,7 +91,8 @@ export default function PayableCreateForm() {
     },
   });
 
-  const isRecurring = watch("isRecurring");
+  const isRecurring = useWatch({ control, name: "isRecurring" });
+  const reminderDaysBefore = useWatch({ control, name: "reminderDaysBefore" });
 
   const onSubmit = async (data: PayableFormValues) => {
     try {
@@ -127,7 +128,7 @@ export default function PayableCreateForm() {
     <div className="relative min-h-dvh w-full bg-background pb-24">
       {/* Background decoration */}
       <div
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[400px] w-[400px] max-w-[90vw] rounded-full bg-gradient-to-b from-ube/8 to-mango/5 blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-100 w-100 max-w-[90vw] rounded-full bg-linear-to-b from-ube/8 to-mango/5 blur-3xl"
         aria-hidden="true"
       />
 
@@ -358,7 +359,7 @@ export default function PayableCreateForm() {
                         {...register("reminderDaysBefore")}
                       />
                       <span className="text-sm text-muted-foreground">
-                        day{Number(watch("reminderDaysBefore")) !== 1 ? "s" : ""} before
+                        day{Number(reminderDaysBefore) !== 1 ? "s" : ""} before
                       </span>
                     </div>
                     {errors.reminderDaysBefore && (

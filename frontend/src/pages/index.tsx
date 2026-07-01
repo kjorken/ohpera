@@ -69,11 +69,11 @@ export default function Home() {
 
       {/* Decorative background blobs */}
       <div
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[600px] max-w-[90vw] rounded-full bg-gradient-to-b from-ube/8 to-mango/5 blur-3xl"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-150 w-150 max-w-[90vw] rounded-full bg-linear-to-b from-ube/8 to-mango/5 blur-3xl"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute bottom-1/4 -right-32 h-72 w-72 rounded-full bg-gradient-to-t from-mango/6 to-transparent blur-2xl"
+        className="pointer-events-none absolute bottom-1/4 -right-32 h-72 w-72 rounded-full bg-linear-to-t from-mango/6 to-transparent blur-2xl"
         aria-hidden="true"
       />
 
