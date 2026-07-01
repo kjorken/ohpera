@@ -44,35 +44,52 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 bg-background">
-      <div className="w-full max-w-sm md:max-w-md">
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            OhPera
-          </h1>
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 bg-background">
+      {/* Decorative background blobs */}
+      <div
+        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[400px] w-[400px] max-w-[90vw] rounded-full bg-gradient-to-b from-ube/8 to-mango/5 blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-gradient-to-t from-mango/6 to-transparent blur-2xl"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 w-full max-w-sm md:max-w-md">
+        <div className="mb-8 text-center">
+          <Link href="/">
+            <h1 className="text-3xl font-bold tracking-tight text-ube font-display cursor-pointer hover:opacity-80 transition-opacity">
+              OhPera
+            </h1>
+          </Link>
           <p className="mt-1 text-sm text-muted-foreground">
-            Track what you owe. Know what you have.
+            Know what you owe. Know what you have.
           </p>
         </div>
 
-        <Card className="w-full shadow-sm">
+        <Card className="w-full border-t-[3px] border-t-ube shadow-lg">
           <CardHeader className="pb-2">
             <CardTitle className="text-2xl font-bold text-foreground">
               Sign in
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="you@example.com"
+                  className="h-11"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-xs text-danger">{errors.email.message}</p>
+                  <p id="email-error" className="text-xs text-danger" role="alert">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-1">
@@ -81,24 +98,27 @@ export default function LoginForm() {
                   id="password"
                   type="password"
                   placeholder="••••••••"
+                  className="h-11"
+                  aria-invalid={!!errors.password}
+                  aria-describedby={errors.password ? "password-error" : undefined}
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-xs text-danger">
+                  <p id="password-error" className="text-xs text-danger" role="alert">
                     {errors.password.message}
                   </p>
                 )}
               </div>
 
               {error && (
-                <div className="rounded-md bg-danger/10 px-3 py-2">
+                <div className="rounded-md bg-danger/10 px-3 py-2" role="alert">
                   <p className="text-xs text-danger">{error}</p>
                 </div>
               )}
 
               <Button
                 type="submit"
-                className="w-full h-11 text-base font-medium"
+                className="w-full h-12 text-base font-medium shadow-md shadow-ube/15 hover:shadow-lg hover:shadow-ube/25 transition-shadow"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Signing in..." : "Sign in"}
@@ -107,13 +127,13 @@ export default function LoginForm() {
           </CardContent>
         </Card>
 
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          No account?{" "}
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          No account yet?{" "}
           <Link
-            className="font-medium text-foreground underline-offset-4 hover:underline"
+            className="font-medium text-ube underline-offset-4 hover:underline"
             href="/register"
           >
-            Register
+            Create one
           </Link>
         </p>
       </div>
