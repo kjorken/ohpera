@@ -46,6 +46,7 @@ export default function RegistrationForm() {
         email: data.email,
         password: data.password,
       });
+      localStorage.setItem("token", res.token);
       const me = await api.get<{ id: string; email: string }>("/auth/me");
       setAuth(me, res.token);
       router.push("/dashboard");

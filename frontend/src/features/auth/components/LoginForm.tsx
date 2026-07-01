@@ -35,6 +35,7 @@ export default function LoginForm() {
     try {
       setError(null);
       const res = await api.post<{ token: string }>("/auth/login", data);
+      localStorage.setItem("token", res.token);
       const me = await api.get<{ id: string; email: string }>("/auth/me");
       setAuth(me, res.token);
       router.push("/dashboard");
