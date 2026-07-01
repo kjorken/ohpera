@@ -16,11 +16,15 @@ import {
   CurrentUser,
   AuthUser,
 } from '../../shared/common/current-user.decorator';
+import { PaymentPeriodsService } from './payment-periods.service';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('payables')
 export class PayablesController {
-  constructor(private payablesService: PayablesService) {}
+  constructor(
+    private payablesService: PayablesService,
+    private paymentPeriodsService: PaymentPeriodsService,
+  ) {}
 
   @Post()
   create(@CurrentUser() user: AuthUser, @Body() dto: CreatePayableDto) {
@@ -30,6 +34,16 @@ export class PayablesController {
   @Get()
   findAll(@CurrentUser() user: AuthUser) {
     return this.payablesService.findAll(user.id);
+  }
+
+  @Get('upcoming')
+  getUpcoming(@CurrentUser() user: AuthUser) {
+    return this.paymentPeriodsService.getUpcoming(user.id);
+  }
+
+  @Get('overdue')
+  getOverdue(@CurrentUser() user: AuthUser) {
+    return this.paymentPeriodsService.getOverdue(user.id);
   }
 
   @Get(':id')
