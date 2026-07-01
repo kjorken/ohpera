@@ -14,8 +14,9 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Something went wrong here: api res");
+    const isJson = res.headers.get("content-type")?.includes("application/json");
+    const error = isJson ? await res.json() : { message: res.statusText };
+    throw new Error(error.message || `Request failed (${res.status})`);
   }
 
   return res.json();
