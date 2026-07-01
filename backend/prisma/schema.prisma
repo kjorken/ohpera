@@ -125,6 +125,7 @@ model Payable {
   isRecurring         Boolean              @default(false) @map("is_recurring")
   recurrenceFrequency RecurrenceFrequency? @map("recurrence_frequency")
   startDate           DateTime             @map("start_date")
+  dueDate             DateTime?            @map("due_date")
   endDate             DateTime?            @map("end_date")
   amountPerPeriod     Decimal              @map("amount_per_period") @db.Decimal(12, 2)
   reminderDaysBefore  Int                  @default(3) @map("reminder_days_before")

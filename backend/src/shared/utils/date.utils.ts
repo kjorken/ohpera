@@ -70,7 +70,7 @@ export function getWindowEnd(
   return end;
 }
 
-export function getBucketWindows(
+export function getBucketWindow(
   frequency: RecurrenceFrequency,
   cycleStart: Date,
   customDays?: number | null,

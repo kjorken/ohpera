@@ -6,10 +6,14 @@ import {
 import { PrismaService } from '../../shared/database/prisma.service';
 import { CreatePayableDto } from './dto/create-payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
+import { PaymentPeriodsService } from './payment-periods.service';
 
 @Injectable()
 export class PayablesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private paymentPeriodsService: PaymentPeriodsService,
+  ) {}
 
   async create(userId: string, dto: CreatePayableDto) {
     const user = await this.prisma.user.findUnique({
@@ -39,6 +43,7 @@ export class PayablesService {
         isRecurring: dto.isRecurring,
         recurrenceFrequency: dto.recurrenceFrequency,
         startDate: new Date(dto.startDate),
+        dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
         endDate: dto.endDate ? new Date(dto.endDate) : null,
         amountPerPeriod: dto.amountPerPeriod,
         reminderDaysBefore: dto.reminderDaysBefore ?? 3,
@@ -46,7 +51,7 @@ export class PayablesService {
       },
     });
 
-    await this.generatePaymentPeriods(payable.id);
+    await this.paymentPeriodsService.generatePaymentPeriods(payable.id);
     return payable;
   }
 

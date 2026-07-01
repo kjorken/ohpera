@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../shared/database/prisma.service';
-import { computeDates, getBucketWindows } from '../../shared/utils/date.utils';
+import { computeDates, getBucketWindow } from '../../shared/utils/date.utils';
 
 @Injectable()
 export class PaymentPeriodsService {
   constructor(private prisma: PrismaService) {}
 
-  private async generatePaymentPeriods(payableId: string) {
+  public async generatePaymentPeriods(payableId: string) {
     const payable = await this.prisma.payable.findUnique({
       where: { id: payableId },
     });
@@ -14,11 +14,17 @@ export class PaymentPeriodsService {
 
     const periods: { dueDate: Date; amountDue: number }[] = [];
     const start = new Date(payable.startDate);
+    let due: Date;
+    if (payable.dueDate !== null && payable.dueDate !== undefined) {
+      due = payable.dueDate;
+    } else {
+      due = new Date(payable.startDate);
+    }
     const end = payable.endDate ? new Date(payable.endDate) : null;
     const amount = Number(payable.amountPerPeriod);
 
     if (!payable.isRecurring) {
-      periods.push({ dueDate: start, amountDue: amount });
+      periods.push({ dueDate: due, amountDue: amount });
     } else if (end) {
       if (!payable.recurrenceFrequency) return;
       const dates = computeDates(start, end, payable.recurrenceFrequency);
@@ -66,7 +72,7 @@ export class PaymentPeriodsService {
       throw new NotFoundException('User settings not found');
     }
 
-    const { start, end } = getBucketWindows(
+    const { start, end } = getBucketWindow(
       settings.bucketFrequency,
       settings.bucketCycleStart,
       settings.bucketCustomDays,

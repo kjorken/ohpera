@@ -37,6 +37,10 @@ export class CreatePayableDto {
 
   @IsOptional()
   @IsDateString()
+  dueDate?: string;
+
+  @IsOptional()
+  @IsDateString()
   endDate: string;
 
   @IsNumber()
