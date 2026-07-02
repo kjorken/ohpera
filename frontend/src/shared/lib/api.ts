@@ -13,6 +13,12 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     },
   });
 
+  if (res.status === 401) {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+    throw new Error("Session expired. Please log in again.");
+  }
+
   if (!res.ok) {
     const isJson = res.headers.get("content-type")?.includes("application/json");
     const error = isJson ? await res.json() : { message: res.statusText };
