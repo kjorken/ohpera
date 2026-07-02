@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { SettingsService } from '../settings/settings.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
@@ -13,6 +14,7 @@ import { LoginDto } from './dto/login.dto';
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private settingsService: SettingsService,
     private jwtService: JwtService,
   ) {}
 
@@ -26,6 +28,8 @@ export class AuthService {
       name: dto.name,
       password: hashed,
     });
+
+    await this.settingsService.create(user.id);
 
     const token = this.jwtService.sign({ sub: user.id, email: user.email });
     return { token };
