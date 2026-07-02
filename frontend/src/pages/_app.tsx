@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import { useAuthStore } from "@/shared/store/auth.store";
 import { useEffect } from "react";
 import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const bodyFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -26,7 +27,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className={`${bodyFont.variable} ${frauncesFont.variable} font-sans`}>
       <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
+        <ErrorBoundary>
+          <Component {...pageProps} />
+        </ErrorBoundary>
       </QueryClientProvider>
     </div>
   );
