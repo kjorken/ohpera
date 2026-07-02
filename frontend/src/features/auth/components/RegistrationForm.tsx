@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/shared/lib/api";
 import { useAuthStore } from "@/shared/store/auth.store";
+import { queryClient } from "@/shared/lib/query-client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Link from "next/link";
@@ -49,6 +50,7 @@ export default function RegistrationForm() {
       localStorage.setItem("token", res.token);
       const me = await api.get<{ id: string; email: string }>("/auth/me");
       setAuth(me, res.token);
+      queryClient.invalidateQueries();
       router.push("/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Registration failed");

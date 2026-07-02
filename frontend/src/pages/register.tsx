@@ -1,5 +1,10 @@
+import GuestGuard from "@/components/GuestGuard";
 import RegistrationForm from "@/features/auth/components/RegistrationForm";
 
 export default function RegisterPage() {
-  return <RegistrationForm />;
+  return (
+    <GuestGuard>
+      <RegistrationForm />
+    </GuestGuard>
+  );
 }

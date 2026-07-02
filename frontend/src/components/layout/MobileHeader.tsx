@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuthStore } from "@/shared/store/auth.store";
+import { queryClient } from "@/shared/lib/query-client";
 import { Settings, LogOut, Tag } from "lucide-react";
 
 export default function MobileHeader() {
@@ -30,6 +31,7 @@ export default function MobileHeader() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     clearAuth();
+    queryClient.clear();
     setOpen(false);
     router.push("/login");
   };
