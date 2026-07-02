@@ -13,7 +13,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     },
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 && !endpoint.startsWith("/auth/")) {
     localStorage.removeItem("token");
     window.location.href = "/login";
     throw new Error("Session expired. Please log in again.");
