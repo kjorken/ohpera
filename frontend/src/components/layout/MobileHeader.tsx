@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuthStore } from "@/shared/store/auth.store";
-import { Settings, LogOut } from "lucide-react";
+import { Settings, LogOut, Tag } from "lucide-react";
 
 export default function MobileHeader() {
   const router = useRouter();
@@ -66,6 +66,14 @@ export default function MobileHeader() {
               </p>
             </div>
             <div className="p-1.5">
+              <Link
+                href="/categories"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <Tag size={18} aria-hidden="true" />
+                Categories
+              </Link>
               <Link
                 href="/settings"
                 onClick={() => setOpen(false)}

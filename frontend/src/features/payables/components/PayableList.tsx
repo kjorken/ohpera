@@ -8,6 +8,7 @@ import {
   Repeat2,
   Archive,
   Trash2,
+  Pencil,
   CircleAlert,
   ChevronRight,
 } from "lucide-react";
@@ -145,6 +146,13 @@ function PayableRow({
                     : `${formatDate(nextPeriod.dueDate)}`}
                 </span>
               )}
+              <Link
+                href={`/payables/${payable.id}/edit`}
+                className="p-1 text-muted-foreground hover:text-ube transition-colors"
+                aria-label={`Edit ${payable.title}`}
+              >
+                <Pencil size={15} />
+              </Link>
               <button
                 type="button"
                 className="p-1 text-muted-foreground hover:text-ube transition-colors"
@@ -197,6 +205,13 @@ function PayableRow({
             : "—"}
         </span>
         <div className="flex items-center gap-1">
+          <Link
+            href={`/payables/${payable.id}/edit`}
+            className="p-1.5 text-muted-foreground hover:text-ube transition-colors rounded-md hover:bg-ube/5"
+            aria-label={`Edit ${payable.title}`}
+          >
+            <Pencil size={15} />
+          </Link>
           <button
             type="button"
             className="p-1.5 text-muted-foreground hover:text-ube transition-colors rounded-md hover:bg-ube/5"

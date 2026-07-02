@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuthStore } from "@/shared/store/auth.store";
-import { Settings, LogOut } from "lucide-react";
+import { Settings, LogOut, Tag } from "lucide-react";
 
 interface NavItem {
     href: string;
@@ -121,6 +121,17 @@ export default function TopBar() {
                             </p>
                         </div>
                         <div className="p-1.5">
+                                    <button
+                                type="button"
+                                onClick={() => {
+                                    setDropdownOpen(false);
+                                    router.push("/categories");
+                                }}
+                                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                            >
+                                <Tag size={18} aria-hidden="true" />
+                                Categories
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => {

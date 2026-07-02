@@ -18,13 +18,41 @@ import PayableFormFields from "./PayableFormFields";
 import type { CategoryOption } from "./PayableFormFields";
 import { payableFormSchema, type PayableFormValues } from "./payable-form-schema";
 
-export default function PayableCreateForm() {
+interface PayableEditFormProps {
+  id: string;
+}
+
+interface PayableData {
+  id: string;
+  title: string;
+  provider: string | null;
+  categoryId: string | null;
+  amountPerPeriod: number;
+  isRecurring: boolean;
+  recurrenceFrequency: string | null;
+  startDate: string;
+  endDate: string | null;
+  reminderDaysBefore: number | null;
+  notes: string | null;
+}
+
+export default function PayableEditForm({ id }: PayableEditFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: () => api.get<CategoryOption[]>("/categories"),
+    retry: false,
+  });
+
+  const {
+    data: payable,
+    isLoading: isLoadingPayable,
+    error: fetchError,
+  } = useQuery({
+    queryKey: ["payable", id],
+    queryFn: () => api.get<PayableData>(`/payables/${id}`),
     retry: false,
   });
 
@@ -36,10 +64,20 @@ export default function PayableCreateForm() {
     formState: { errors, isSubmitting },
   } = useForm<PayableFormValues>({
     resolver: zodResolver(payableFormSchema),
-    defaultValues: {
-      isRecurring: false,
-      reminderDaysBefore: "3",
-    },
+    values: payable
+      ? {
+          title: payable.title,
+          provider: payable.provider ?? "",
+          categoryId: payable.categoryId ?? "",
+          amountPerPeriod: String(payable.amountPerPeriod),
+          isRecurring: payable.isRecurring,
+          recurrenceFrequency: payable.recurrenceFrequency ?? "",
+          startDate: payable.startDate?.split("T")[0] ?? "",
+          endDate: payable.endDate?.split("T")[0] ?? "",
+          reminderDaysBefore: String(payable.reminderDaysBefore ?? 3),
+          notes: payable.notes ?? "",
+        }
+      : undefined,
   });
 
   const onSubmit = async (data: PayableFormValues) => {
@@ -64,8 +102,8 @@ export default function PayableCreateForm() {
         notes: data.notes || undefined,
       };
 
-      await api.post("/payables", payload);
-      router.push("/dashboard");
+      await api.put(`/payables/${id}`, payload);
+      router.push("/payables");
     } catch (err: unknown) {
       setError(
         err instanceof Error
@@ -74,6 +112,29 @@ export default function PayableCreateForm() {
       );
     }
   };
+
+  if (isLoadingPayable) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-6">
+        <div className="mb-4 h-4 w-32 animate-pulse motion-reduce:animate-none rounded-md bg-muted" />
+        <div className="h-125 w-full animate-pulse motion-reduce:animate-none rounded-xl bg-muted" />
+      </div>
+    );
+  }
+
+  if (fetchError || !payable) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-6 text-center">
+        <p className="text-danger">Could not load this bill.</p>
+        <Link
+          href="/payables"
+          className="mt-4 inline-flex text-sm text-ube hover:underline"
+        >
+          Back to bills
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-dvh w-full bg-background pb-24">
@@ -84,20 +145,20 @@ export default function PayableCreateForm() {
 
       <div className="relative z-10 mx-auto max-w-lg px-4 py-6">
         <Link
-          href="/dashboard"
+          href="/payables"
           className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft size={16} aria-hidden="true" />
-          Back to dashboard
+          Back to bills
         </Link>
 
         <Card className="border-t-[3px] border-t-ube shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-bold text-foreground">
-              Add a bill
+              Edit bill
             </CardTitle>
             <CardDescription>
-              Enter the details and we&apos;ll track it for you.
+              Update the details for {payable.title}.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -135,7 +196,7 @@ export default function PayableCreateForm() {
                     Saving...
                   </span>
                 ) : (
-                  "Save bill"
+                  "Save changes"
                 )}
               </Button>
             </form>
