@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: ohpera_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      # Backend
+      - name: Install backend deps
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Generate Prisma client
+        working-directory: ./backend
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://postgres:admin@localhost:5432/ohpera_test
+
+      - name: Lint backend
+        working-directory: ./backend
+        run: npm run lint
+
+      - name: TypeCheck backend
+        working-directory: ./backend
+        run: npx tsc --noEmit
+
+      - name: Build backend
+        working-directory: ./backend
+        run: npm run build
+
+      # Frontend
+      - name: Install frontend deps
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Lint frontend
+        working-directory: ./frontend
+        run: npx eslint src/
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build

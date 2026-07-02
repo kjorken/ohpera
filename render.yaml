@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: ohpera-backend
+    runtime: node
+    repo: https://github.com/<your-org>/ohpera
+    plan: free
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && node dist/main
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ohpera-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://ohpera.vercel.app
+
+databases:
+  - name: ohpera-db
+    plan: free
+    postgresMajorVersion: 16

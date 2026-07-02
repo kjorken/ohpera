@@ -1,12 +1,9 @@
-import {
-  Controller,
-  Get,
-  Put,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser, AuthUser } from '../../shared/common/current-user.decorator';
+import {
+  CurrentUser,
+  AuthUser,
+} from '../../shared/common/current-user.decorator';
 import { SettingsService } from './settings.service';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
 

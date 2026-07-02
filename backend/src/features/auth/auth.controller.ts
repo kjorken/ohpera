@@ -1,17 +1,16 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import {
+  CurrentUser,
+  AuthUser,
+} from '../../shared/common/current-user.decorator';
 
 @Controller('auth')
+@Throttle({ default: { ttl: 60000, limit: 10 } })
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -27,7 +26,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
-  me(@Request() req) {
-    return req.user;
+  me(@CurrentUser() user: AuthUser) {
+    return user;
   }
 }

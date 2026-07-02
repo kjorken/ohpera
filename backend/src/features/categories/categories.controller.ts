@@ -9,7 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser, AuthUser } from '../../shared/common/current-user.decorator';
+import {
+  CurrentUser,
+  AuthUser,
+} from '../../shared/common/current-user.decorator';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
