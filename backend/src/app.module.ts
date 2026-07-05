@@ -7,6 +7,7 @@ import { PayablesModule } from './features/payables/payables.module';
 import { CategoriesModule } from './features/categories/categories.module';
 import { SettingsModule } from './features/settings/settings.module';
 import { HealthModule } from './features/health/health.module';
+import { BucketsModule } from './features/buckets/buckets.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { HealthModule } from './features/health/health.module';
     CategoriesModule,
     SettingsModule,
     HealthModule,
+    BucketsModule,
   ],
 })
 export class AppModule {}
