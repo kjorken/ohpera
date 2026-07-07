@@ -8,7 +8,7 @@ import type {
 import type { PayableFormValues } from "./payable-form-schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Repeat2 } from "lucide-react";
+
 
 const frequencies = [
   { value: "WEEKLY", label: "Weekly" },

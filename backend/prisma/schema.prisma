@@ -85,7 +85,7 @@ model UserSettings {
   userId             String              @unique @map("user_id")
   timezone           String              @default("Asia/Manila")
   currency           String              @default("PHP")
-  defaultReminderDays Int               @default(3) @map("default_reminder_days")
+  defaultReminderDays Int                @default(3) @map("default_reminder_days")
   bucketFrequency    RecurrenceFrequency @default(SEMI_MONTHLY) @map("bucket_frequency")
   bucketCycleStart   DateTime            @map("bucket_cycle_start")
   bucketCustomDays   Int?                @map("bucket_custom_days")

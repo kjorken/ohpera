@@ -7,6 +7,7 @@ import { PrismaService } from '../../shared/database/prisma.service';
 import { CreatePayableDto } from './dto/create-payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
 import { PaymentPeriodsService } from './payment-periods.service';
+import { PaymentStatus } from '../../../generated/prisma/enums';
 
 @Injectable()
 export class PayablesService {
@@ -55,9 +56,9 @@ export class PayablesService {
     return payable;
   }
 
-  async findAll(userId: string) {
+  async findAll(userId: string, archived = false) {
     return this.prisma.payable.findMany({
-      where: { userId, deletedAt: null, isArchived: false },
+      where: { userId, deletedAt: null, isArchived: archived },
       include: { category: true, paymentPeriods: true },
       orderBy: { createdAt: 'desc' },
     });
@@ -86,6 +87,31 @@ export class PayablesService {
 
   async archive(userId: string, id: string) {
     await this.findOne(userId, id);
+    return this.prisma.payable.update({
+      where: { id },
+      data: { isArchived: true },
+    });
+  }
+
+  async markPaid(userId: string, id: string) {
+    await this.findOne(userId, id);
+
+    const now = new Date();
+    const periods = await this.prisma.paymentPeriod.findMany({
+      where: { payableId: id, status: { in: ['OUTSTANDING', 'PARTIAL'] } },
+    });
+
+    for (const period of periods) {
+      await this.prisma.paymentPeriod.update({
+        where: { id: period.id },
+        data: {
+          amountPaid: period.amountDue,
+          status: PaymentStatus.PAID,
+          paidAt: now,
+        },
+      });
+    }
+
     return this.prisma.payable.update({
       where: { id },
       data: { isArchived: true },

@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -32,8 +33,8 @@ export class PayablesController {
   }
 
   @Get()
-  findAll(@CurrentUser() user: AuthUser) {
-    return this.payablesService.findAll(user.id);
+  findAll(@CurrentUser() user: AuthUser, @Query('archived') archived?: string) {
+    return this.payablesService.findAll(user.id, archived === 'true');
   }
 
   @Get('upcoming')
@@ -63,6 +64,11 @@ export class PayablesController {
   @Put(':id/archive')
   archive(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.payablesService.archive(user.id, id);
+  }
+
+  @Post(':id/mark-paid')
+  markPaid(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.payablesService.markPaid(user.id, id);
   }
 
   @Delete(':id')

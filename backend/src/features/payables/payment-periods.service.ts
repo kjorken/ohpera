@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../../shared/database/prisma.service';
 import { computeDates, getBucketWindow } from '../../shared/utils/date.utils';
+import { PaymentStatus } from '../../../generated/prisma/enums';
 
 @Injectable()
 export class PaymentPeriodsService {
@@ -44,6 +49,32 @@ export class PaymentPeriodsService {
         dueDate: p.dueDate,
         amountDue: p.amountDue,
       })),
+    });
+  }
+
+  async updatePeriod(userId: string, periodId: string, amountPaid: number) {
+    const period = await this.prisma.paymentPeriod.findUnique({
+      where: { id: periodId },
+      include: { payable: { select: { userId: true } } },
+    });
+
+    if (!period) throw new NotFoundException('Payment period not found');
+    if (period.payable.userId !== userId)
+      throw new ForbiddenException('Access denied');
+
+    const amountDue = Number(period.amountDue);
+    let status: (typeof PaymentStatus)[keyof typeof PaymentStatus];
+    if (amountPaid <= 0) {
+      status = PaymentStatus.OUTSTANDING;
+    } else if (amountPaid >= amountDue) {
+      status = PaymentStatus.PAID;
+    } else {
+      status = PaymentStatus.PARTIAL;
+    }
+
+    return this.prisma.paymentPeriod.update({
+      where: { id: periodId },
+      data: { amountPaid, status },
     });
   }
 
